@@ -1696,7 +1696,7 @@ function FirstVisitPopup({
               initial={{ opacity: 0, y: 24, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 24, scale: 0.98 }}
-              className="soft-outline relative flex max-h-[calc(100svh-1.5rem)] w-full max-w-[372px] flex-col overflow-hidden rounded-[2rem] border border-white/70 bg-[radial-gradient(circle_at_top_left,_rgba(240,255,251,0.98),_rgba(255,255,255,0.98)_38%,_rgba(238,247,255,0.98)_100%)] px-4 py-4 shadow-[0_26px_70px_-28px_rgba(19,56,104,0.42)] sm:max-h-[min(487px,calc(100svh-2rem))] sm:max-w-[410px] sm:px-5 sm:py-5"
+              className="soft-outline relative flex max-h-[calc(100svh-1.5rem)] w-full max-w-[404px] flex-col overflow-hidden rounded-[2rem] border border-white/70 bg-[radial-gradient(circle_at_top_left,_rgba(240,255,251,0.98),_rgba(255,255,255,0.98)_38%,_rgba(238,247,255,0.98)_100%)] px-4 py-4 shadow-[0_26px_70px_-28px_rgba(19,56,104,0.42)] sm:max-h-[min(540px,calc(100svh-2rem))] sm:max-w-[460px] sm:px-5 sm:py-5"
             >
               <button
                 type="button"
