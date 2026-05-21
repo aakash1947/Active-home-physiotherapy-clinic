@@ -599,8 +599,12 @@ function App() {
     const hasSeenPopup = window.sessionStorage.getItem(storageKey);
 
     if (!hasSeenPopup) {
-      setIsPopupOpen(true);
-      window.sessionStorage.setItem(storageKey, "true");
+      const popupTimer = window.setTimeout(() => {
+        setIsPopupOpen(true);
+        window.sessionStorage.setItem(storageKey, "true");
+      }, 3000);
+
+      return () => window.clearTimeout(popupTimer);
     }
   }, [popupViewport]);
 
