@@ -1690,13 +1690,13 @@ function FirstVisitPopup({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[70] flex items-start justify-center overflow-y-auto bg-slate-950/45 px-3 py-4 backdrop-blur-sm sm:items-center sm:px-4 sm:py-0"
+            className="fixed inset-0 z-[70] flex items-start justify-center overflow-y-auto bg-slate-950/45 px-3 py-3 backdrop-blur-sm sm:items-center sm:px-4 sm:py-4"
           >
             <motion.div
               initial={{ opacity: 0, y: 24, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 24, scale: 0.98 }}
-              className="soft-outline relative flex h-[458px] w-full max-w-[372px] flex-col overflow-hidden rounded-[2rem] border border-white/70 bg-[radial-gradient(circle_at_top_left,_rgba(240,255,251,0.98),_rgba(255,255,255,0.98)_38%,_rgba(238,247,255,0.98)_100%)] px-4 py-4 shadow-[0_26px_70px_-28px_rgba(19,56,104,0.42)] sm:h-[487px] sm:max-w-[410px] sm:px-5 sm:py-5"
+              className="soft-outline relative flex max-h-[calc(100svh-1.5rem)] w-full max-w-[372px] flex-col overflow-hidden rounded-[2rem] border border-white/70 bg-[radial-gradient(circle_at_top_left,_rgba(240,255,251,0.98),_rgba(255,255,255,0.98)_38%,_rgba(238,247,255,0.98)_100%)] px-4 py-4 shadow-[0_26px_70px_-28px_rgba(19,56,104,0.42)] sm:max-h-[min(487px,calc(100svh-2rem))] sm:max-w-[410px] sm:px-5 sm:py-5"
             >
               <button
                 type="button"
@@ -1707,8 +1707,8 @@ function FirstVisitPopup({
                 <X className="h-4 w-4" />
               </button>
 
-              <div className="pr-12">
-                <div>
+              <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+                <div className="pr-12">
                   <div className="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(180deg,_#f0fffb,_#dffff6)] px-3 py-1.5 text-[0.72rem] font-bold uppercase tracking-[0.08em] text-mint-600 shadow-sm">
                     <CalendarDays className="h-3.5 w-3.5" />
                     Free Consultation
@@ -1722,7 +1722,7 @@ function FirstVisitPopup({
                   <p className="mt-2 text-[0.88rem] leading-5 text-brand-900/74">
                     Share your details to get quick guidance on the right physiotherapy support.
                   </p>
-                  <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-2">
+                  <div className="mt-3 grid grid-cols-1 gap-x-3 gap-y-2 sm:grid-cols-2">
                     {consultationBenefits.map((item) => (
                       <div key={item} className="flex items-start gap-2">
                         <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-mint-200 bg-mint-50 text-mint-600">
@@ -1733,48 +1733,48 @@ function FirstVisitPopup({
                     ))}
                   </div>
                 </div>
+
+                <form onSubmit={handlePopupSubmit} className="mt-4 grid gap-3">
+                  <Field
+                    label="Name"
+                    name="name"
+                    value={popupData.name}
+                    onChange={handlePopupChange}
+                    placeholder="Enter your name"
+                    required
+                    compact
+                    error={popupErrors.name}
+                  />
+                  <Field
+                    label="Phone Number"
+                    name="phone"
+                    value={popupData.phone}
+                    onChange={handlePopupChange}
+                    placeholder="Enter your mobile number"
+                    inputMode="tel"
+                    required
+                    compact
+                    error={popupErrors.phone}
+                  />
+
+                  <button
+                    type="submit"
+                    className="mt-1 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-brand-700 via-brand-600 to-mint-500 px-5 py-3 text-[0.92rem] font-semibold text-white shadow-float transition hover:-translate-y-0.5"
+                  >
+                    <ArrowRight className="h-4 w-4" />
+                    Request Free Consultation
+                  </button>
+                </form>
+
+                {popupSubmitted ? (
+                  <div className="mt-3 rounded-2xl border border-mint-200 bg-mint-50 px-3.5 py-2.5 text-[0.8rem] leading-5 text-mint-700">
+                    {popupSuccessMessage}{" "}
+                    {hasWhatsapp
+                      ? "A WhatsApp draft should open for quick follow-up."
+                      : "Clinic WhatsApp can be updated anytime from the site config."}
+                  </div>
+                ) : null}
               </div>
-
-              <form onSubmit={handlePopupSubmit} className="mt-4 grid gap-3">
-                <Field
-                  label="Name"
-                  name="name"
-                  value={popupData.name}
-                  onChange={handlePopupChange}
-                  placeholder="Enter your name"
-                  required
-                  compact
-                  error={popupErrors.name}
-                />
-                <Field
-                  label="Phone Number"
-                  name="phone"
-                  value={popupData.phone}
-                  onChange={handlePopupChange}
-                  placeholder="Enter your mobile number"
-                  inputMode="tel"
-                  required
-                  compact
-                  error={popupErrors.phone}
-                />
-
-                <button
-                  type="submit"
-                  className="mt-1 inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-brand-700 via-brand-600 to-mint-500 px-5 py-3 text-[0.92rem] font-semibold text-white shadow-float transition hover:-translate-y-0.5"
-                >
-                  <ArrowRight className="h-4 w-4" />
-                  Request Free Consultation
-                </button>
-              </form>
-
-              {popupSubmitted ? (
-                <div className="mt-3 rounded-2xl border border-mint-200 bg-mint-50 px-3.5 py-2.5 text-[0.8rem] leading-5 text-mint-700">
-                  {popupSuccessMessage}{" "}
-                  {hasWhatsapp
-                    ? "A WhatsApp draft should open for quick follow-up."
-                    : "Clinic WhatsApp can be updated anytime from the site config."}
-                </div>
-              ) : null}
             </motion.div>
           </motion.div>
         ) : null}
