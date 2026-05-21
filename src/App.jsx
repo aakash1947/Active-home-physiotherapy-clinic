@@ -565,6 +565,7 @@ function getServiceMeta(title) {
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [popupViewport, setPopupViewport] = useState("desktop");
   const [popupSubmitted, setPopupSubmitted] = useState(false);
   const [popupData, setPopupData] = useState(initialConsultationForm);
   const [formData, setFormData] = useState(initialConsultationForm);
@@ -577,13 +578,31 @@ function App() {
   const actions = getActionLinks();
 
   useEffect(() => {
-    const hasSeenPopup = window.sessionStorage.getItem("active-physio-popup-seen");
+    const mediaQuery = window.matchMedia("(max-width: 639px)");
+    const syncViewport = () => {
+      setPopupViewport(mediaQuery.matches ? "mobile" : "desktop");
+    };
+
+    syncViewport();
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", syncViewport);
+      return () => mediaQuery.removeEventListener("change", syncViewport);
+    }
+
+    mediaQuery.addListener(syncViewport);
+    return () => mediaQuery.removeListener(syncViewport);
+  }, []);
+
+  useEffect(() => {
+    const storageKey = `active-physio-popup-seen-${popupViewport}`;
+    const hasSeenPopup = window.sessionStorage.getItem(storageKey);
 
     if (!hasSeenPopup) {
       setIsPopupOpen(true);
-      window.sessionStorage.setItem("active-physio-popup-seen", "true");
+      window.sessionStorage.setItem(storageKey, "true");
     }
-  }, []);
+  }, [popupViewport]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -1616,12 +1635,16 @@ function SectionShell({ id, eyebrow, title, copy, children }) {
   );
 }
 
-function Field({ label, error, compact = false, ...props }) {
+function Field({ label, error, compact = false, dense = false, ...props }) {
   return (
     <label>
       <span
         className={`block font-semibold text-brand-900/85 ${
-          compact ? "mb-1.5 text-[0.82rem]" : "mb-2 text-sm"
+          compact
+            ? dense
+              ? "mb-1 text-[0.78rem] sm:mb-1.5 sm:text-[0.82rem]"
+              : "mb-1.5 text-[0.82rem]"
+            : "mb-2 text-sm"
         }`}
       >
         {label}
@@ -1629,13 +1652,25 @@ function Field({ label, error, compact = false, ...props }) {
       <input
         {...props}
         className={`w-full rounded-2xl border bg-brand-50/35 text-brand-900 outline-none ring-0 transition focus:border-brand-300 focus:bg-white ${
-          compact ? "px-4 py-2.5 text-sm" : "px-4 py-3"
+          compact
+            ? dense
+              ? "px-3.5 py-2 text-[0.95rem] sm:px-4 sm:py-2.5 sm:text-sm"
+              : "px-4 py-2.5 text-sm"
+            : "px-4 py-3"
         } ${
           error ? "border-rose-300 bg-rose-50/60" : "border-brand-100"
         }`}
       />
       {error ? (
-        <span className={`block text-rose-600 ${compact ? "mt-1 text-xs" : "mt-2 text-sm"}`}>
+        <span
+          className={`block text-rose-600 ${
+            compact
+              ? dense
+                ? "mt-1 text-[0.72rem] sm:text-xs"
+                : "mt-1 text-xs"
+              : "mt-2 text-sm"
+          }`}
+        >
           {error}
         </span>
       ) : null}
@@ -1690,91 +1725,101 @@ function FirstVisitPopup({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[70] flex items-start justify-center overflow-y-auto bg-slate-950/45 px-3 py-4 backdrop-blur-sm sm:items-center sm:px-4 sm:py-0"
+            className="fixed inset-0 z-[70] flex items-start justify-center overflow-y-auto bg-slate-950/45 px-1 py-1 backdrop-blur-sm sm:items-center sm:px-4 sm:py-4"
           >
             <motion.div
               initial={{ opacity: 0, y: 24, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 24, scale: 0.98 }}
-              className="soft-outline relative flex h-[458px] w-full max-w-[372px] flex-col overflow-hidden rounded-[2rem] border border-white/70 bg-[radial-gradient(circle_at_top_left,_rgba(240,255,251,0.98),_rgba(255,255,255,0.98)_38%,_rgba(238,247,255,0.98)_100%)] px-4 py-4 shadow-[0_26px_70px_-28px_rgba(19,56,104,0.42)] sm:h-[487px] sm:max-w-[410px] sm:px-5 sm:py-5"
+              className="soft-outline relative flex h-[calc(100dvh-0.35rem)] max-h-[calc(100dvh-0.35rem)] w-full max-w-[430px] flex-col overflow-hidden rounded-[1.75rem] border border-white/70 bg-[radial-gradient(circle_at_top_left,_rgba(240,255,251,0.98),_rgba(255,255,255,0.98)_38%,_rgba(238,247,255,0.98)_100%)] px-3.5 py-3.5 shadow-[0_26px_70px_-28px_rgba(19,56,104,0.42)] sm:h-auto sm:max-h-[min(560px,calc(100svh-2rem))] sm:max-w-[460px] sm:rounded-[2rem] sm:px-5 sm:py-5"
             >
               <button
                 type="button"
                 aria-label="Close popup"
                 onClick={onClose}
-                className="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-brand-100 bg-white/95 text-brand-800 shadow-sm transition hover:bg-brand-50"
+                className="absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-brand-100 bg-white/95 text-brand-800 shadow-sm transition hover:bg-brand-50 sm:right-4 sm:top-4 sm:h-10 sm:w-10"
               >
                 <X className="h-4 w-4" />
               </button>
 
-              <div className="pr-12">
-                <div>
-                  <div className="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(180deg,_#f0fffb,_#dffff6)] px-3 py-1.5 text-[0.72rem] font-bold uppercase tracking-[0.08em] text-mint-600 shadow-sm">
+              <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+                <div className="pr-10 sm:pr-12">
+                  <div className="inline-flex items-center gap-1.5 rounded-full bg-[linear-gradient(180deg,_#f0fffb,_#dffff6)] px-2.5 py-1 text-[0.64rem] font-bold uppercase tracking-[0.08em] text-mint-600 shadow-sm sm:gap-2 sm:px-3 sm:py-1.5 sm:text-[0.72rem]">
                     <CalendarDays className="h-3.5 w-3.5" />
                     Free Consultation
                   </div>
-                  <h3 className="mt-3 text-[1.45rem] font-semibold leading-[1.05] tracking-[-0.03em] text-brand-800">
+                  <h3 className="mt-2.5 text-[1.26rem] font-semibold leading-[1.02] tracking-[-0.03em] text-brand-800 sm:mt-3 sm:text-[1.45rem] sm:leading-[1.05]">
                     Book Your{" "}
                     <span className="bg-gradient-to-r from-brand-600 to-mint-500 bg-clip-text text-transparent">
                       Free Consultation
                     </span>
                   </h3>
-                  <p className="mt-2 text-[0.88rem] leading-5 text-brand-900/74">
+                  <p className="mt-1.5 text-[0.8rem] leading-4.5 text-brand-900/74 sm:mt-2 sm:text-[0.88rem] sm:leading-5">
                     Share your details to get quick guidance on the right physiotherapy support.
                   </p>
-                  <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-2">
+                  <div className="mt-2.5 grid grid-cols-2 gap-x-2.5 gap-y-2 sm:mt-3 sm:gap-x-3">
                     {consultationBenefits.map((item) => (
                       <div key={item} className="flex items-start gap-2">
-                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-mint-200 bg-mint-50 text-mint-600">
+                        <span className="mt-0.5 flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-full border border-mint-200 bg-mint-50 text-mint-600 sm:h-5 sm:w-5">
                           <BadgeCheck className="h-3 w-3" />
                         </span>
-                        <span className="text-[0.78rem] leading-4 text-brand-900/82">{item}</span>
+                        <span className="text-[0.72rem] leading-3.5 text-brand-900/82 sm:text-[0.78rem] sm:leading-4">{item}</span>
                       </div>
                     ))}
                   </div>
                 </div>
+
+                <form
+                  id="popup-consultation-form"
+                  onSubmit={handlePopupSubmit}
+                  className="mt-3 grid gap-2.5 sm:mt-4 sm:gap-3"
+                >
+                  <Field
+                    label="Name"
+                    name="name"
+                    value={popupData.name}
+                    onChange={handlePopupChange}
+                    placeholder="Enter your name"
+                    required
+                    compact
+                    dense
+                    error={popupErrors.name}
+                  />
+                  <Field
+                    label="Phone Number"
+                    name="phone"
+                    value={popupData.phone}
+                    onChange={handlePopupChange}
+                    placeholder="Enter your mobile number"
+                    inputMode="tel"
+                    required
+                    compact
+                    dense
+                    error={popupErrors.phone}
+                  />
+
+                </form>
               </div>
 
-              <form onSubmit={handlePopupSubmit} className="mt-4 grid gap-3">
-                <Field
-                  label="Name"
-                  name="name"
-                  value={popupData.name}
-                  onChange={handlePopupChange}
-                  placeholder="Enter your name"
-                  required
-                  compact
-                  error={popupErrors.name}
-                />
-                <Field
-                  label="Phone Number"
-                  name="phone"
-                  value={popupData.phone}
-                  onChange={handlePopupChange}
-                  placeholder="Enter your mobile number"
-                  inputMode="tel"
-                  required
-                  compact
-                  error={popupErrors.phone}
-                />
-
+              <div className="shrink-0 border-t border-white/65 bg-white/72 px-1 pb-[calc(env(safe-area-inset-bottom)+0.25rem)] pt-2.5 backdrop-blur-sm sm:px-0 sm:pb-1 sm:pt-3">
                 <button
                   type="submit"
-                  className="mt-1 inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-brand-700 via-brand-600 to-mint-500 px-5 py-3 text-[0.92rem] font-semibold text-white shadow-float transition hover:-translate-y-0.5"
+                  form="popup-consultation-form"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-brand-700 via-brand-600 to-mint-500 px-5 py-2.5 text-[0.86rem] font-semibold text-white shadow-float transition hover:-translate-y-0.5 sm:py-3 sm:text-[0.92rem]"
                 >
                   <ArrowRight className="h-4 w-4" />
                   Request Free Consultation
                 </button>
-              </form>
 
-              {popupSubmitted ? (
-                <div className="mt-3 rounded-2xl border border-mint-200 bg-mint-50 px-3.5 py-2.5 text-[0.8rem] leading-5 text-mint-700">
-                  {popupSuccessMessage}{" "}
-                  {hasWhatsapp
-                    ? "A WhatsApp draft should open for quick follow-up."
-                    : "Clinic WhatsApp can be updated anytime from the site config."}
-                </div>
-              ) : null}
+                {popupSubmitted ? (
+                  <div className="mt-2.5 rounded-2xl border border-mint-200 bg-mint-50 px-3.5 py-2.5 text-[0.76rem] leading-4.5 text-mint-700 sm:mt-3 sm:text-[0.8rem] sm:leading-5">
+                    {popupSuccessMessage}{" "}
+                    {hasWhatsapp
+                      ? "A WhatsApp draft should open for quick follow-up."
+                      : "Clinic WhatsApp can be updated anytime from the site config."}
+                  </div>
+                ) : null}
+              </div>
             </motion.div>
           </motion.div>
         ) : null}
