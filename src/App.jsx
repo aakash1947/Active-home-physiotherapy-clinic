@@ -1725,7 +1725,7 @@ function FirstVisitPopup({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[70] flex items-start justify-center overflow-y-auto bg-slate-950/45 px-1 py-1 backdrop-blur-sm sm:items-center sm:px-4 sm:py-4"
+            className="fixed inset-0 z-[70] flex items-center justify-center overflow-y-auto bg-slate-950/45 px-1 py-1 backdrop-blur-sm sm:px-4 sm:py-4"
           >
             <motion.div
               initial={{ opacity: 0, y: 24, scale: 0.98 }}
