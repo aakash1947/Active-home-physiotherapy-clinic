@@ -1731,7 +1731,7 @@ function FirstVisitPopup({
               initial={{ opacity: 0, y: 24, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 24, scale: 0.98 }}
-              className="soft-outline relative flex h-[calc(100dvh-0.35rem)] max-h-[calc(100dvh-0.35rem)] w-full max-w-[430px] flex-col overflow-hidden rounded-[1.75rem] border border-white/70 bg-[radial-gradient(circle_at_top_left,_rgba(240,255,251,0.98),_rgba(255,255,255,0.98)_38%,_rgba(238,247,255,0.98)_100%)] px-3.5 py-3.5 shadow-[0_26px_70px_-28px_rgba(19,56,104,0.42)] sm:h-auto sm:max-h-[min(560px,calc(100svh-2rem))] sm:max-w-[460px] sm:rounded-[2rem] sm:px-5 sm:py-5"
+              className="soft-outline relative flex max-h-[calc(100dvh-0.35rem)] w-full max-w-[430px] flex-col overflow-hidden rounded-[1.75rem] border border-white/70 bg-[radial-gradient(circle_at_top_left,_rgba(240,255,251,0.98),_rgba(255,255,255,0.98)_38%,_rgba(238,247,255,0.98)_100%)] px-3.5 py-3.5 shadow-[0_26px_70px_-28px_rgba(19,56,104,0.42)] sm:h-auto sm:max-h-[min(560px,calc(100svh-2rem))] sm:max-w-[460px] sm:rounded-[2rem] sm:px-5 sm:py-5"
             >
               <button
                 type="button"
