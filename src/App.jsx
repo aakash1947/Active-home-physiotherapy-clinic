@@ -1060,7 +1060,7 @@ function ServicesSection({ onOpenConsultation }) {
         variants={stagger}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.15 }}
+        viewport={{ once: true, amount: 0.01 }}
         className="grid gap-4 md:grid-cols-2 xl:grid-cols-3"
       >
         {services.map((service, index) => {
@@ -1601,7 +1601,7 @@ function SectionShell({ id, eyebrow, title, copy, children }) {
       variants={fadeUp}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, amount: 0.12 }}
+      viewport={{ once: true, amount: 0.01 }}
       className="section-shell px-6 py-8 sm:px-8 sm:py-10 lg:px-10"
     >
       <div className="mb-8 max-w-3xl">
